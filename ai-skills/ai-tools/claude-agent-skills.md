@@ -55,26 +55,23 @@ Settings（左下角头像）→ Capabilities → 开启「Code execution and fi
 
 ⚠️ Team/Enterprise 用户：需管理员先在 Admin Settings 中启用
 
-### 方式一：使用 skill-creator（推荐，无需手动编辑文件）
+### 方式一：使用 skill-creator（5 分钟，推荐）
 
 ```text
-1. 在 Claude.ai 或 Claude Code 中输入：
-   "帮我创建一个 Skill"
+1. 新对话输入："帮我创建一个 Skill，用于 [你的用途]"
+   示例："帮我创建一个 Skill，用于写符合我公司风格的邮件"
 
-2. Claude 会启动 skill-creator，交互式询问：
-   - 这个 Skill 要做什么？
-   - 有哪些步骤？
-   - 需要什么资源？
+2. 回答 Claude 的 2-3 个澄清问题
 
-3. Claude 自动生成：
-   - 文件夹结构
-   - SKILL.md 文件
-   - 相关资源文件
+3. Claude 生成 Skill 后，点击「Enable Skill」直接启用
+   └─ 或点击「Download」→ Settings > Skills > Upload skill
 
-4. 完成！下次执行相关任务时，Claude 会自动使用这个 Skill
+4. 测试：新对话中输入相关任务，观察 Claude 是否自动调用
+
+5. 迭代：回到创建对话，说「把 XX 改成 YY」→ 重新启用/上传
 ```
 
-### 方式二：手动创建 Skill（10 分钟）
+### 方式二：手动创建 Skill（面向开发者/API 用户）
 
 ```text
 1. 创建文件夹结构：
