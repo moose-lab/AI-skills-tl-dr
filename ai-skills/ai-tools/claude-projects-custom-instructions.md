@@ -1,131 +1,139 @@
-# Claude Projects + Custom Instructions — TL;DR
+# Claude 定制化入门（Projects + Skills）— TL;DR
 
-> **适合谁**：非技术用户、想 5 分钟内上手 Claude 定制化的人
+> **适合谁**：非技术用户、想用浏览器快速定制 Claude 的人
 > **前置要求**：Claude Pro/Team 账户、会用浏览器
-> **更强方案**：需要可复用能力模块或执行脚本 → 看 [Skills](./claude-agent-skills.md)（推荐）
+> **进阶内容**：需要手动编写 SKILL.md 或 API 集成 → 看 [开发者指南](./claude-agent-skills.md)
 
 ---
 
 ## 1. 这是什么？
 
-**在 Claude.ai 中创建专属工作区，上传参考资料 + 设置自定义指令，让 Claude 按照你的要求回答问题。**
-
-### Claude 定制化功能对比
-
-| 功能 | 作用域 | 适合场景 |
-|-----|-------|---------|
-| Custom Instructions | 账户级（所有对话） | 通用偏好（语气、格式） |
-| Projects | 项目级 | 特定项目的上下文和文档 |
-| **Skills**（推荐） | 按需加载 | 可复用能力模块、执行脚本 |
+**让 Claude 记住你的偏好和工作方式，不用每次重复解释。**
 
 ---
 
-## 2. 它解决了什么具体问题？
+## 2. Claude 定制化功能对比
 
-- **问题**：每次对话都要重复解释背景、风格要求、专业术语
-- **场景**：需要 Claude 持续了解你的项目/公司/写作风格的长期任务
-- **变化**：从「每次重复说明」变成「一次设置，持续生效」
+| 功能 | 作用域 | 适合场景 | 难度 |
+|-----|-------|---------|------|
+| Custom Instructions | 账户级（所有对话） | 通用偏好（语气、格式） | 简单 |
+| Projects | 项目级 | 特定项目的上下文和文档 | 简单 |
+| Skills | 按需加载 | 可复用的工作流程 | 简单 |
+
+**本文覆盖以上三种功能的基础用法。**
 
 ---
 
 ## 3. 什么时候该用？什么时候不该用？
 
 ### 适合使用：
-- 需要 Claude 了解特定领域知识（公司文档、代码库、风格指南）
-- 长期项目，需要一致的输出风格
-- 团队协作，多人需要使用相同的 Claude 配置
-- 分析大量文档（最多 200K token，约 500 页）
+- 希望 Claude 记住你的写作风格、语气偏好
+- 需要 Claude 了解特定项目的背景资料
+- 有重复性任务想让 Claude 按固定流程执行
 
 ### 不适合使用：
 - 一次性简单问题
-- 不同任务需要完全不同的上下文
-- 需要实时执行代码或调用外部 API（用 Agent Skills）
-- 超过 200K token 的超大文档集
+- 需要手动编写脚本或 API 集成（→ 看[开发者指南](./claude-agent-skills.md)）
 
 ---
 
-## 4. 核心机制（最多 3 点）
+## 4. 核心机制（3 种功能）
 
-1. **Project Knowledge**：上传文档/代码，Claude 在回答时自动参考这些资料（200K 上下文窗口）
-2. **Custom Instructions**：设置持久指令，定义 Claude 的角色、语气、输出格式
-3. **对话隔离**：每个 Project 的上下文独立，不会互相干扰
+1. **Custom Instructions**：账户级设置，所有对话生效
+2. **Projects**：项目级设置，上传文档 + 指令，仅该项目生效
+3. **Skills**：可复用能力模块，Claude 自动识别并调用
 
 ---
 
-## 5. 最小可执行示例（关键）
+## 5. 最小可执行示例
 
 ### 前提条件
-- Claude Pro / Team / Enterprise 账户
+- Claude Pro / Team 账户
 - 访问 [claude.ai](https://claude.ai)
 
-### 5 分钟设置流程
+---
+
+### 功能 A：Custom Instructions（2 分钟）
 
 ```text
-1. 登录 claude.ai
+1. 点击左下角头像 → Settings → Custom instructions
 
-2. 点击左侧边栏的 "Projects"（项目）
+2. 输入你的通用偏好，例如：
+   "用简洁的中文回答，避免使用 emoji，代码要有注释"
 
-3. 点击 "Create Project"（创建项目）
-   - 输入项目名称，如："我的技术博客助手"
+3. 保存 → 所有新对话都会遵循这些指令
+```
 
-4. 添加 Project Knowledge（项目知识）
+---
+
+### 功能 B：Projects（5 分钟）
+
+```text
+1. 点击左侧边栏 "Projects" → "Create Project"
+
+2. 输入项目名称，如："Q1 营销方案"
+
+3. 添加 Project Knowledge
    - 点击 "Add content"
-   - 上传文件：你的写作样本、风格指南、技术文档
-   - 或直接粘贴文本内容
+   - 上传文件或粘贴文本（最多 200K token ≈ 500 页）
 
-5. 设置 Custom Instructions（自定义指令）
+4. 设置 Custom Instructions（项目级）
    - 点击 "Set instructions"
-   - 输入你的要求，例如：
+   - 输入项目专属指令
 
-   "你是一个技术博客写作助手。
-   - 使用简洁、直接的中文
-   - 避免使用 emoji
-   - 代码示例要有注释
-   - 每篇文章包含 TL;DR 摘要
-   - 语气：专业但不生硬"
-
-6. 开始对话
-   - 在该 Project 中发起新对话
-   - Claude 会自动参考你上传的资料和指令
+5. 在该 Project 中发起对话，Claude 会自动参考这些资料
 ```
 
-### Custom Instructions 模板示例
+---
+
+### 功能 C：Skills（5 分钟）
+
+**Skills = 可复用的工作流程，Claude 自动识别并调用。**
+
+#### 前置步骤（首次必做）
 
 ```text
-# 角色定义
-你是 [角色名称]，专注于 [领域]。
-
-# 输出要求
-- 语言：[中文/英文/双语]
-- 语气：[专业/轻松/学术]
-- 格式：[Markdown/纯文本/结构化]
-
-# 必须遵守
-- [规则 1]
-- [规则 2]
-
-# 禁止
-- [不要做的事 1]
-- [不要做的事 2]
+Settings → Capabilities → 开启「Code execution and file creation」→ 确认 Skills 区域可见
 ```
+
+⚠️ Team/Enterprise 用户：需管理员先启用
+
+#### 创建 Skill
+
+```text
+1. 新对话输入："帮我创建一个 Skill，用于 [你的用途]"
+   示例："帮我创建一个 Skill，用于写符合我公司风格的周报"
+
+2. 回答 Claude 的 2-3 个澄清问题
+
+3. Claude 生成 Skill 后，点击「Enable Skill」直接启用
+   └─ 或点击「Download」→ Settings > Skills > Upload skill
+
+4. 测试：新对话中输入相关任务，观察 Claude 是否自动调用
+
+5. 迭代：回到创建对话，说「把 XX 改成 YY」→ 重新启用
+```
+
+#### 内置 Skills（无需创建）
+
+Claude 已自带：Excel / Word / PPT / PDF 处理能力，直接描述需求即可。
 
 ---
 
 ## 6. 常见误区 / 使用失败点
 
-- ❌ **上传太多无关文档**：会稀释重要信息，降低回答质量
 - ❌ **指令过于模糊**：「写得好一点」不如「使用短句，每段不超过 3 句」
-- ❌ **期望完美记忆**：Claude 参考资料但不会 100% 精确引用，重要数据需核实
-- ⚠️ **忘记更新资料**：项目文档变更后，需要手动更新 Project Knowledge
-- ⚠️ **混用不同项目**：在错误的 Project 中对话，会得到不相关的回答
+- ❌ **上传太多无关文档**：会稀释重要信息，降低回答质量
+- ⚠️ **Skills 选项灰显？**→ Code execution 未开启，去 Settings 检查
+- ⚠️ **Claude 没调用我的 Skill？**→ 检查 toggle 是否开启
 
 ---
 
 ## 7. 信息来源
 
-- **原始来源**：[Collaborate with Claude on Projects - Anthropic 官方公告](https://www.anthropic.com/news/projects)
-  > "Projects enable you to ground Claude's outputs in your internal knowledge—be it style guides, codebases, interview transcripts, or past work."
-- **补充文档**：[Claude.ai 帮助中心](https://support.anthropic.com)
+- [Collaborate with Claude on Projects - Anthropic](https://www.anthropic.com/news/projects)
+- [Introducing Agent Skills - Anthropic](https://claude.com/blog/skills)
+- [Claude 帮助中心](https://support.anthropic.com)
 
 ---
 

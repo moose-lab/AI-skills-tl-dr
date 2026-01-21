@@ -1,155 +1,164 @@
-# Claude Agent Skills — TL;DR
+# Claude Skills 开发者指南 — TL;DR
 
-> **适合谁**：想要更强定制、需要脚本执行、使用 Claude Code 或 API 的用户
-> **前置要求**：了解基本文件结构、有 Claude Pro/Max/Team 账户
-> **不适合**：只想简单定制 Claude 回答风格 → 先看 [Custom Instructions](./claude-projects-custom-instructions.md)
+> **适合谁**：开发者、需要手动编写 SKILL.md 或 API 集成的技术用户
+> **前置要求**：了解文件结构、YAML 语法、有 Claude Pro/Max/Team 账户
+> **入门内容**：只想用 skill-creator 快速创建 → 看 [非技术用户指南](./claude-projects-custom-instructions.md)
 
 ---
 
 ## 1. 这是什么？
 
-**一个包含 SKILL.md 文件的文件夹，定义 Claude 执行特定任务的指令、脚本和资源，Claude 按需自动加载。**
+**一个包含 SKILL.md 文件的文件夹，定义 Claude 执行特定任务的指令、脚本和资源，可通过 Claude Code 或 API 部署。**
 
 ---
 
 ## 2. 它解决了什么具体问题？
 
-- **问题**：复杂任务需要详细指令 + 脚本 + 参考资料，每次都要手动提供
-- **场景**：需要 Claude 执行标准化、可重复的专业任务（生成 PPT、处理 PDF、执行代码）
-- **变化**：从「每次复制粘贴指令」变成「Claude 自动识别并加载相关技能」
+- **问题**：skill-creator 生成的 Skill 无法满足复杂需求（自定义脚本、精确控制触发条件）
+- **场景**：需要打包 Python/Bash 脚本、跨平台部署、团队共享标准化能力
+- **变化**：从「对话式创建」变成「代码化定义 + 版本控制」
 
 ---
 
 ## 3. 什么时候该用？什么时候不该用？
 
 ### 适合使用：
-- 重复性的专业任务（文档生成、数据处理、代码模板）
-- 需要执行脚本或代码的工作流
-- 跨平台使用（Claude.ai + Claude Code + API）
-- 团队需要共享标准化的 Claude 能力
+- 需要在 Skill 中包含可执行脚本
+- 需要精确控制 `description` 触发条件
+- 通过 Claude Code 或 API 部署
+- 团队需要版本控制和代码审查
 
 ### 不适合使用：
-- 一次性简单任务（用 Custom Instructions 更快）
-- 不需要脚本或复杂资源的场景
-- 对技术不熟悉且不想学习文件结构的用户（先用 Custom Instructions）
+- 简单的工作流程（用 skill-creator 更快）
+- 不熟悉文件结构或 YAML 语法
 
 ---
 
 ## 4. 核心机制（最多 3 点）
 
-1. **按需加载**：Claude 扫描可用 Skills，只在任务相关时加载所需的最小信息
-2. **可组合**：多个 Skills 可以协同工作，Claude 自动协调
-3. **包含脚本**：可以打包 Python/Bash 脚本，Claude 执行确定性计算而非生成
-
-**内置 Skills**：Claude 已自带 Excel/Word/PPT/PDF 处理能力，无需创建，自动调用。
+1. **SKILL.md**：入口文件，包含元数据（name、description）和指令
+2. **按需加载**：Claude 根据 `description` 判断是否加载，只读取必要内容
+3. **脚本执行**：可打包 Python/Bash 脚本，Claude 执行确定性计算
 
 ---
 
-## 5. 最小可执行示例（关键）
+## 5. 最小可执行示例
 
-### 前置步骤（首次必做）
-
-```text
-Settings（左下角头像）→ Capabilities → 开启「Code execution and file creation」→ 确认 Skills 区域可见并开启
-```
-
-⚠️ Team/Enterprise 用户：需管理员先在 Admin Settings 中启用
-
-### 方式一：使用 skill-creator（5 分钟，推荐）
+### 前置步骤
 
 ```text
-1. 新对话输入："帮我创建一个 Skill，用于 [你的用途]"
-   示例："帮我创建一个 Skill，用于写符合我公司风格的邮件"
-
-2. 回答 Claude 的 2-3 个澄清问题
-
-3. Claude 生成 Skill 后，点击「Enable Skill」直接启用
-   └─ 或点击「Download」→ Settings > Skills > Upload skill
-
-4. 测试：新对话中输入相关任务，观察 Claude 是否自动调用
-
-5. 迭代：回到创建对话，说「把 XX 改成 YY」→ 重新启用/上传
+Settings → Capabilities → 开启「Code execution and file creation」
 ```
 
-### 方式二：手动创建 Skill（面向开发者/API 用户）
+### 手动创建 Skill（10 分钟）
+
+#### Step 1：创建文件夹结构
 
 ```text
-1. 创建文件夹结构：
-   my-skill/
-   ├── SKILL.md
-   └── resources/
-       └── template.md（可选）
-
-2. 编写 SKILL.md：
+my-skill/
+├── SKILL.md          # 必须
+└── resources/        # 可选
+    └── template.md
 ```
+
+#### Step 2：编写 SKILL.md
 
 ```yaml
 ---
-name: blog-post-generator
-description: 当用户要求写博客文章时使用此技能
+name: weekly-report-generator
+description: 当用户要求写周报、生成周报、创建本周总结时使用此技能
 ---
 
-# 博客文章生成器
+# 周报生成器
 
 ## 何时使用
-用户请求：写博客、创建文章、撰写技术内容
+用户请求包含：周报、本周总结、weekly report
 
 ## 执行步骤
-1. 询问文章主题和目标读者
-2. 生成大纲（3-5 个主要部分）
-3. 逐部分撰写内容
-4. 添加 TL;DR 摘要
-5. 检查格式和链接
+1. 询问本周完成的主要工作
+2. 询问遇到的问题和解决方案
+3. 询问下周计划
+4. 按模板生成周报
 
 ## 输出格式
 - Markdown 格式
-- 包含代码块（如适用）
-- 每段不超过 150 字
+- 包含：本周完成、问题与方案、下周计划 三个部分
+- 每部分 3-5 条要点
 
 ## 限制
-- 不生成虚假引用
-- 不复制他人内容
+- 不编造工作内容
+- 不添加用户未提及的信息
 ```
+
+#### Step 3：部署
+
+**Claude Code**：
+```bash
+# 放置到项目根目录或全局目录
+cp -r my-skill/ ~/.claude/skills/
+```
+
+**API**：
+```bash
+# 打包为 ZIP 上传
+zip -r my-skill.zip my-skill/
+# 通过 /v1/skills 端点上传
+```
+
+#### Step 4：测试
 
 ```text
-3. 将文件夹放置在 Claude 可访问的位置：
-   - Claude Code：项目根目录或 ~/.claude/skills/
-   - API：通过 /v1/skills 端点上传
-
-4. 测试：输入 "帮我写一篇关于 X 的博客文章"
-   - Claude 会在思维过程中显示正在使用的 Skill
+输入："帮我写本周的周报"
+观察：Claude 思维过程中应显示正在使用 weekly-report-generator
 ```
 
-### SKILL.md 元数据字段说明
+---
+
+### SKILL.md 元数据字段
 
 ```yaml
 ---
-name: skill-identifier      # Skill 唯一标识（必填）
-description: 何时使用此技能   # Claude 用此判断是否加载（必填，关键！）
+name: skill-identifier      # 唯一标识（必填）
+description: 触发条件描述    # Claude 用此判断是否加载（必填，关键！）
 ---
 ```
 
-**重要**：`description` 是 Claude 决定是否使用这个 Skill 的依据，务必写清楚触发条件。
+**关键**：`description` 决定 Claude 何时使用这个 Skill。写得太模糊 = 永远不会被触发。
+
+---
+
+### 包含脚本的 Skill
+
+```text
+my-skill/
+├── SKILL.md
+└── scripts/
+    └── process.py    # Claude 可执行此脚本
+```
+
+在 SKILL.md 中引用：
+```markdown
+## 执行脚本
+当需要处理数据时，执行 `scripts/process.py`
+```
 
 ---
 
 ## 6. 常见误区 / 使用失败点
 
-- ❌ **description 写得太模糊**：Claude 无法判断何时使用，导致 Skill 从不被触发
-- ❌ **SKILL.md 过于臃肿**：应该拆分成多个引用文件，保持主文件精简
+- ❌ **description 写得太模糊**：Claude 无法判断何时使用，Skill 从不被触发
+- ❌ **SKILL.md 过于臃肿**：应拆分成多个引用文件，保持主文件精简
 - ❌ **安装不信任来源的 Skill**：可能包含恶意脚本，务必审查代码
-- ⚠️ **Skills 选项灰显？**→ Code execution 未开启，去 Settings 检查
-- ⚠️ **Claude 不使用我的 Skill？**→ 检查 toggle 是否开启 + description 是否清晰
 - ⚠️ **上传失败？**→ 检查 ZIP 内是否有 SKILL.md 文件
+- ⚠️ **脚本不执行？**→ 确认 Code execution 已开启
 
 ---
 
 ## 7. 信息来源
 
-- **官方公告**：[Introducing Agent Skills - Anthropic](https://claude.com/blog/skills)
-  > "Skills are folders that include instructions, scripts, and resources that Claude can load when needed."
-- **技术架构**：[Equipping Agents for the Real World with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
-- **API 文档**：[Claude Developer Platform - Skills API](https://docs.anthropic.com)
+- [Introducing Agent Skills - Anthropic](https://claude.com/blog/skills)
+- [Equipping Agents for the Real World with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
+- [Claude Developer Platform - Skills API](https://docs.anthropic.com)
 
 ---
 
