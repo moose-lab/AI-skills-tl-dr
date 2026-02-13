@@ -1,0 +1,4 @@
+files:
+  - source: /ai-skills/*.md
+    translation: /ai-skills/%file_name%.%two_letters_code%.md
+    multilingual: 1
